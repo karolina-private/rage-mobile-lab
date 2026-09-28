@@ -4,15 +4,15 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Microsoft VC++ x64 runtime is present. The unsigned build compiles the Swift app layer and now stops at the expected generated FEX header `FEXCore/Config/ConfigValues.inl`; native FEX iOS libraries have not yet been configured.
+Status: Microsoft VC++ x64 runtime is present. FEX configuration and `FEXCore_Base` build pass on the owner's Mac. `FEXCore` reaches 100% but its iOS-only diagnostic branch incorrectly compiles Win32 `VirtualQuery` types when `FEX_IOS_HOST` is enabled; a narrow, tested local compatibility patch is ready.
 
 Next:
-1. Configure and build FEX for iOS with `build/fex-ios/build.sh` on the owner's Mac.
+1. Apply `scripts/patch-madeira-fex-ios.sh` to the local Madeira checkout and rebuild `FEXCore` with `FEX_IOS_HOST` enabled.
 2. Rerun the unsigned Xcode build and record the next missing native component.
 3. Build Wine/DXMT chains in the upstream build order.
 4. Configure the owner's signing team and sideload only after an unsigned build completes.
 
-Build: Not established yet.
+Build: FEX iOS configured; `FEXCore_Base` succeeded; `FEXCore` blocked only by the guarded diagnostic source issue.
 
 Sandbox: `sb-rage-mobile-lab` (CT 105; Debian, 4 CPU / 3072 MB RAM / 16 GB disk). The seven-day setup window is open until 2026-10-05 10:40 Europe/Tirane. The verified recursive upstream checkout is `/root/madeira` at `8c050d03f4d89096e1e2e2c8bb44479fffd86619`; the project clone is `/root/rage-mobile-lab`.
 
@@ -29,3 +29,4 @@ Log:
 - 2026-09-28: First unsigned Xcode build stopped before compilation because Xcode lacks the iOS 26.5 platform component. Added a regression test so preflight detects this condition instead of reporting a false pass.
 - 2026-09-28: After installing the iOS 26.5 platform and Metal Toolchain, the owner ran the first unsigned Debug build. It reached the linker but failed because the Microsoft VC++ runtime resource directory is absent; the saved log needs a focused linker-error extraction.
 - 2026-09-28: Extracted all 12 required VC++ x64 runtime DLLs from the current Microsoft redistributable. The next unsigned build compiles the app layer and fails on the missing generated FEX configuration header, confirming the FEX iOS build chain is next.
+- 2026-09-28: Manual FEX iOS CMake configure succeeded with `CMAKE_SYSTEM_PROCESSOR=arm64`, `TUNE_CPU=none`, and `FEX_IOS_HOST`. `FEXCore_Base` built; `FEXCore` reached its final object before an unguarded Win32-only `VirtualQuery` diagnostic in `Arm64.cpp` failed on iOS. Added a tested, idempotent local source-patch helper to guard that diagnostic by `_WIN32`.
