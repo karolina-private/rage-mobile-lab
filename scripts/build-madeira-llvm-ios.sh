@@ -44,6 +44,9 @@ cmake -S "$source_dir/llvm" -B "$host_build" -G Ninja \
   -DLLVM_ENABLE_PROJECTS= \
   -DLLVM_TARGETS_TO_BUILD= \
   -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF \
+  -DLLVM_INCLUDE_BENCHMARKS=OFF \
+  -DLLVM_INCLUDE_UTILS=OFF \
   -DLLVM_ENABLE_ZLIB=OFF
 cmake --build "$host_build" --target llvm-tblgen -j2
 
@@ -61,6 +64,9 @@ cmake -S "$source_dir/llvm" -B "$ios_build" -G Ninja \
   -DLLVM_BUILD_TOOLS=OFF \
   -DLLVM_BUILD_UTILS=OFF \
   -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF \
+  -DLLVM_INCLUDE_BENCHMARKS=OFF \
+  -DLLVM_INCLUDE_UTILS=OFF \
   -DLLVM_ENABLE_ZLIB=OFF \
   -DLLVM_TABLEGEN="$host_build/bin/llvm-tblgen"
 cmake --build "$ios_build" -j2
