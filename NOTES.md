@@ -4,13 +4,13 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Full public Madeira checkout is reproducible in the sandbox. The owner's Mac preflight passed with Xcode 26.6 and the iPhoneOS 26.5 SDK; next is an unsigned baseline Xcode build to expose missing upstream artifacts.
+Status: macOS can start the Madeira Debug iOS build. The initial unsigned build reached the linker and exposed missing `app/Madeira/x86_64-vcruntime`; exact linker diagnostics still need extracting from the saved build log.
 
 Next:
-1. Run `scripts/preflight-macos.sh` on the owner's Mac against a recursive Madeira checkout.
-2. Supply the documented Apple/Xcode-only and redistributable build inputs on that Mac.
-3. Attempt the upstream Debug IPA build with the owner's signing team.
-4. Define the iPhone 15 Pro runtime/JIT installation steps only after a signed IPA exists.
+1. Supply Microsoft VC++ x64 runtime DLLs unchanged via the official redistributable.
+2. Extract the hidden `ld:` diagnostics from the unsigned build log.
+3. Build the native FEX iOS static libraries, then rerun the unsigned build.
+4. Configure the owner's signing team and sideload only after an unsigned build completes.
 
 Build: Not established yet.
 
@@ -27,3 +27,4 @@ Log:
 - 2026-09-28: Sandbox CT 105 installed; full recursive public Madeira checkout passed at `8c050d03f4d89096e1e2e2c8bb44479fffd86619` (2.3 GB). Added and sandbox-tested `scripts/preflight-macos.sh`.
 - 2026-09-28: Owner ran macOS preflight successfully: Xcode 26.6 / iPhoneOS 26.5 SDK, recursive Madeira checkout complete. Signing team must be changed from upstream's value before a signed build.
 - 2026-09-28: First unsigned Xcode build stopped before compilation because Xcode lacks the iOS 26.5 platform component. Added a regression test so preflight detects this condition instead of reporting a false pass.
+- 2026-09-28: After installing the iOS 26.5 platform and Metal Toolchain, the owner ran the first unsigned Debug build. It reached the linker but failed because the Microsoft VC++ runtime resource directory is absent; the saved log needs a focused linker-error extraction.
