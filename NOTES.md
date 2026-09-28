@@ -4,7 +4,7 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Full public Madeira checkout is reproducible in the sandbox; macOS preflight script added and verified for its non-macOS failure path.
+Status: Full public Madeira checkout is reproducible in the sandbox. The owner's Mac preflight passed with Xcode 26.6 and the iPhoneOS 26.5 SDK; next is an unsigned baseline Xcode build to expose missing upstream artifacts.
 
 Next:
 1. Run `scripts/preflight-macos.sh` on the owner's Mac against a recursive Madeira checkout.
@@ -25,3 +25,4 @@ Decisions:
 Log:
 - 2026-09-28: Created public repository `karolina-private/rage-mobile-lab` and requested a dedicated disposable Debian build sandbox.
 - 2026-09-28: Sandbox CT 105 installed; full recursive public Madeira checkout passed at `8c050d03f4d89096e1e2e2c8bb44479fffd86619` (2.3 GB). Added and sandbox-tested `scripts/preflight-macos.sh`.
+- 2026-09-28: Owner ran macOS preflight successfully: Xcode 26.6 / iPhoneOS 26.5 SDK, recursive Madeira checkout complete. Signing team must be changed from upstream's value before a signed build.
