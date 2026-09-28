@@ -4,14 +4,14 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Microsoft VC++ x64 runtime, FEX, and the Wine iOS wineserver archive build on the owner's Mac. The recovered ARM64EC helper and a `sync.c` include-order correction fixed Wine configuration: both `build-macos` and `build-arm64ec` now generate Makefiles successfully. Next prerequisites for `libntdll_unix.a` are the generated ARM64EC DirectWrite headers and the iOS GnuTLS stack.
+Status: Microsoft VC++ x64 runtime, FEX, iOS FreeType/GnuTLS, `libwineserver.a`, and `libntdll_unix.a` build on the owner's Mac. The unsigned Xcode Debug link now reaches DXMT and stops only because `app/Madeira/libdxmt_combined.a` does not exist.
 
 Next:
-1. Generate the Wine ARM64EC DirectWrite headers and build the iOS GnuTLS stack.
-2. Build `libntdll_unix.a`, then `libwin32u_unix.a` and DXMT in linker order.
+1. Initialize the pinned DXMT submodule and assemble the documented iOS LLVM 15 build prerequisite.
+2. Build `libdxmt_combined.a`, then `libwin32u_unix.a` in linker order.
 3. Configure signing and sideload only after an unsigned build completes.
 
-Build: FEX iOS, `libwineserver.a`, and both Wine configure trees are ready; `libntdll_unix.a` awaits DirectWrite headers and GnuTLS.
+Build: FEX iOS, `libwineserver.a`, and `libntdll_unix.a` are ready; DXMT requires the missing `toolchains/llvm-ios-build/` static libraries.
 
 Sandbox: `sb-rage-mobile-lab` (CT 105; Debian, 4 CPU / 3072 MB RAM / 16 GB disk). The seven-day setup window is open until 2026-10-05 10:40 Europe/Tirane. The verified recursive upstream checkout is `/root/madeira` at `8c050d03f4d89096e1e2e2c8bb44479fffd86619`; the project clone is `/root/rage-mobile-lab`.
 
@@ -35,3 +35,5 @@ Log:
 - 2026-09-28: The next Xcode link found `libntdll_unix.a` missing. Verified that `wine/dlls/ntdll/loader.c` includes absent `arm64ec_x64_export_iat.c`; this exactly matches Madeira upstream issue #20. The missing code is runtime-critical, so the project is blocked rather than patched with an invented stub.
 - 2026-09-28: Located the exact missing source in closed `willfaust/wine` PR #2 (head `c9c186e9998270015d12ebd6a11de264421df98c`), which added the matching helper and loader integration. The recovered file is 3,826 bytes, SHA-256 `06710c6d80624bbb7dd570553c9639f71418c18dc2983365f0136230d987331d`; added a verified retrieval helper.
 - 2026-09-28: The owner applied the verified helper and then fixed the exact `sync.c` include-order failure by placing `config.h` first. Both Wine macOS/aarch64 and ARM64EC configure passes completed and generated Makefiles; unsupported desktop features are expected for this iOS-focused build.
+- 2026-09-28: FreeType and iOS GnuTLS/GMP/Nettle/Hogweed built successfully. A guarded SDK patch restored the server object on current iPhoneOS SDKs. The ntdll runner resolved the actual Wine IDL headers requested by DirectWrite and built all 31 objects; verified `app/Madeira/libntdll_unix.a` is 1,648,120 bytes.
+- 2026-09-28: Unsigned Debug Xcode link progressed through FEX, Wine server, and ntdll, then stopped at the next genuine artifact boundary: missing `libdxmt_combined.a`. DXMT's pinned submodule and `toolchains/llvm-ios-build/` are absent locally; do not retry the Xcode link until the DXMT unix archive exists.
