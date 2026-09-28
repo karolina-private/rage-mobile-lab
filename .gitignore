@@ -10,6 +10,9 @@ game-data/
 logs/*.log
 *.ips
 
+# Read-only local upstream checkouts; revisions go in UPSTREAMS.md
+upstream/
+
 # Secrets and local signing
 .env
 *.p12
