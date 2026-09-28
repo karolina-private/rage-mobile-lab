@@ -11,5 +11,6 @@ grep -Fq -- '-DLLVM_TABLEGEN="$host_build/bin/llvm-tblgen"' "$script"
 grep -Fq -- '-DCMAKE_SYSTEM_NAME=iOS' "$script"
 grep -Fq -- '-DLLVM_INCLUDE_EXAMPLES=OFF' "$script"
 grep -Fq -- '-DLLVM_INCLUDE_BENCHMARKS=OFF' "$script"
+grep -Fq -- '-DLLVM_ENABLE_PLUGINS=OFF' "$script"
 grep -Fq 'cmake --build "$ios_build" -j2' "$script"
 echo 'Madeira LLVM iOS build script test passed.'
