@@ -14,7 +14,7 @@ Next:
 
 Build: Not established yet.
 
-Sandbox: `sb-rage-mobile-lab` (requested; Debian, 4 CPU / 3072 MB RAM / 16 GB disk).
+Sandbox: `sb-rage-mobile-lab` (CT 105; Debian, 4 CPU / 3072 MB RAM / 16 GB disk). The seven-day setup window is open until 2026-10-05 10:40 Europe/Tirane. The verified recursive upstream checkout is `/root/madeira` at `8c050d03f4d89096e1e2e2c8bb44479fffd86619`; the project clone is `/root/rage-mobile-lab`.
 
 Decisions:
 - Use an independent GitHub repository, not a GitHub fork.
