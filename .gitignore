@@ -1,0 +1,19 @@
+# Apple / Xcode
+DerivedData/
+.build/
+*.xcuserstate
+xcuserdata/
+
+# Runtime data and user-owned game material
+prefixes/
+game-data/
+logs/*.log
+*.ips
+
+# Secrets and local signing
+.env
+*.p12
+*.mobileprovision
+
+# OS files
+.DS_Store
