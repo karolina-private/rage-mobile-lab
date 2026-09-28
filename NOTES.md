@@ -4,12 +4,12 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: macOS can start the Madeira Debug iOS build. The initial unsigned build reached the linker and exposed missing `app/Madeira/x86_64-vcruntime`; exact linker diagnostics still need extracting from the saved build log.
+Status: Microsoft VC++ x64 runtime is present. The unsigned build compiles the Swift app layer and now stops at the expected generated FEX header `FEXCore/Config/ConfigValues.inl`; native FEX iOS libraries have not yet been configured.
 
 Next:
-1. Supply Microsoft VC++ x64 runtime DLLs unchanged via the official redistributable.
-2. Extract the hidden `ld:` diagnostics from the unsigned build log.
-3. Build the native FEX iOS static libraries, then rerun the unsigned build.
+1. Configure and build FEX for iOS with `build/fex-ios/build.sh` on the owner's Mac.
+2. Rerun the unsigned Xcode build and record the next missing native component.
+3. Build Wine/DXMT chains in the upstream build order.
 4. Configure the owner's signing team and sideload only after an unsigned build completes.
 
 Build: Not established yet.
@@ -28,3 +28,4 @@ Log:
 - 2026-09-28: Owner ran macOS preflight successfully: Xcode 26.6 / iPhoneOS 26.5 SDK, recursive Madeira checkout complete. Signing team must be changed from upstream's value before a signed build.
 - 2026-09-28: First unsigned Xcode build stopped before compilation because Xcode lacks the iOS 26.5 platform component. Added a regression test so preflight detects this condition instead of reporting a false pass.
 - 2026-09-28: After installing the iOS 26.5 platform and Metal Toolchain, the owner ran the first unsigned Debug build. It reached the linker but failed because the Microsoft VC++ runtime resource directory is absent; the saved log needs a focused linker-error extraction.
+- 2026-09-28: Extracted all 12 required VC++ x64 runtime DLLs from the current Microsoft redistributable. The next unsigned build compiles the app layer and fails on the missing generated FEX configuration header, confirming the FEX iOS build chain is next.
