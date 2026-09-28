@@ -38,6 +38,11 @@ for required in FEX wine research/dxmt app/Madeira.xcodeproj build/fex-ios/build
   [ -e "$madeira_dir/$required" ] || fail "Madeira checkout is incomplete: missing $required"
 done
 
+destinations=$(xcodebuild -project "$madeira_dir/app/Madeira.xcodeproj" -scheme Madeira -showdestinations 2>&1 || true)
+printf '%s\n' "$destinations" | grep -F 'is not installed' >/dev/null && fail 'iOS platform is unavailable in Xcode; install it from Xcode > Settings > Components and rerun this check'
+printf '%s\n' "$destinations" | grep -F 'platform:iOS' >/dev/null || fail 'the Madeira scheme has no eligible iOS destination in the selected Xcode'
+info 'Madeira has an eligible iOS build destination'
+
 team=$(grep -E '^[[:space:]]*DEVELOPMENT_TEAM = ' "$madeira_dir/app/Madeira.xcodeproj/project.pbxproj" | sed -n '1p' || true)
 [ -n "$team" ] && printf 'NOTICE: upstream Xcode project contains %s; change signing to your Apple Development team before building.\n' "$team"
 
