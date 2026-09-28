@@ -4,13 +4,13 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Repository created; waiting for the Proxmox broker confirmation to create `sb-rage-mobile-lab`.
+Status: Full public Madeira checkout is reproducible in the sandbox; macOS preflight script added and verified for its non-macOS failure path.
 
 Next:
-1. Clone and inspect the Madeira source without creating a GitHub fork relationship.
-2. Create a documented, minimal iOS build and sideload prerequisite checklist.
-3. Build the upstream stack in the disposable sandbox where feasible.
-4. Define a hardware test protocol for iPhone 15 Pro.
+1. Run `scripts/preflight-macos.sh` on the owner's Mac against a recursive Madeira checkout.
+2. Supply the documented Apple/Xcode-only and redistributable build inputs on that Mac.
+3. Attempt the upstream Debug IPA build with the owner's signing team.
+4. Define the iPhone 15 Pro runtime/JIT installation steps only after a signed IPA exists.
 
 Build: Not established yet.
 
@@ -24,3 +24,4 @@ Decisions:
 
 Log:
 - 2026-09-28: Created public repository `karolina-private/rage-mobile-lab` and requested a dedicated disposable Debian build sandbox.
+- 2026-09-28: Sandbox CT 105 installed; full recursive public Madeira checkout passed at `8c050d03f4d89096e1e2e2c8bb44479fffd86619` (2.3 GB). Added and sandbox-tested `scripts/preflight-macos.sh`.
