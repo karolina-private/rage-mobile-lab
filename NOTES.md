@@ -4,14 +4,14 @@ Goal: Evaluate whether a user-owned GTA V Windows installation can launch reprod
 
 Owner asked: 2026-09-28
 
-Status: Microsoft VC++ x64 runtime, FEX, and the Wine iOS wineserver archive build on the owner's Mac. The next unsigned Xcode link stops at missing `libntdll_unix.a`. This cannot be responsibly built from the pinned Madeira sources: Wine `loader.c` unconditionally includes the absent `arm64ec_x64_export_iat.c`, which blocks ARM64EC configure/Makefile generation and thus the generated headers needed by the ntdll iOS build. The upstream project has a matching unresolved public issue (#20).
+Status: Microsoft VC++ x64 runtime, FEX, and the Wine iOS wineserver archive build on the owner's Mac. The next unsigned Xcode link stops at missing `libntdll_unix.a`. The apparent missing ARM64EC helper was recovered from the exact Wine upstream PR that introduced the matching `loader.c` logic: `willfaust/wine` PR #2, head commit `c9c186e9998270015d12ebd6a11de264421df98c`. A hash-verified, non-overwriting retrieval helper is ready; after applying it, ARM64EC configure must be rerun and verified.
 
 Next:
-1. Monitor/verify an upstream fix that supplies `arm64ec_x64_export_iat.c`; do not invent a substitute for this runtime-critical ARM64EC code.
-2. Once fixed, complete Wine ARM64EC header generation, GnuTLS, `libntdll_unix.a`, `libwin32u_unix.a`, and DXMT in order.
+1. Retrieve the verified helper from the exact closed Wine PR, rerun Wine configure, and verify both macOS and ARM64EC Makefiles/headers.
+2. Build GnuTLS, `libntdll_unix.a`, `libwin32u_unix.a`, and DXMT in order once Wine configure succeeds.
 3. Configure signing and sideload only after an unsigned build completes.
 
-Build: FEX iOS and `libwineserver.a` are linked; blocked at `libntdll_unix.a` by the missing upstream ARM64EC source file.
+Build: FEX iOS and `libwineserver.a` are linked; `libntdll_unix.a` awaits restoration and verification of the exact missing ARM64EC helper.
 
 Sandbox: `sb-rage-mobile-lab` (CT 105; Debian, 4 CPU / 3072 MB RAM / 16 GB disk). The seven-day setup window is open until 2026-10-05 10:40 Europe/Tirane. The verified recursive upstream checkout is `/root/madeira` at `8c050d03f4d89096e1e2e2c8bb44479fffd86619`; the project clone is `/root/rage-mobile-lab`.
 
@@ -33,3 +33,4 @@ Log:
 - 2026-09-28: With jemalloc removed, the unsigned link reaches `libwineserver.a`. Madeira's own wineserver script requires an untracked pre-existing base archive, so it cannot serve a clean build. Added a tested bootstrap helper that compiles the non-replaced Wine server objects into a base iOS archive before Madeira patches it.
 - 2026-09-28: Wine host configure found the ARM64EC cross-compiler and generated `include/config.h`, then failed while creating its complete Makefile because a generated ARM64EC export source is absent. The config header was sufficient: the bootstrap and iOS-specific wineserver patch build completed, producing `app/Madeira/libwineserver.a` (1,258,168 bytes).
 - 2026-09-28: The next Xcode link found `libntdll_unix.a` missing. Verified that `wine/dlls/ntdll/loader.c` includes absent `arm64ec_x64_export_iat.c`; this exactly matches Madeira upstream issue #20. The missing code is runtime-critical, so the project is blocked rather than patched with an invented stub.
+- 2026-09-28: Located the exact missing source in closed `willfaust/wine` PR #2 (head `c9c186e9998270015d12ebd6a11de264421df98c`), which added the matching helper and loader integration. The recovered file is 3,826 bytes, SHA-256 `06710c6d80624bbb7dd570553c9639f71418c18dc2983365f0136230d987331d`; added a verified retrieval helper.
